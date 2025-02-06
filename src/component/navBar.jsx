@@ -18,6 +18,7 @@ import {
   ModalFooter
 } from 'reactstrap';
 import { Link, useNavigate } from "react-router-dom";
+import logo1 from '../assets/logo1.png';
 
 function NavBar(args) {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,31 +31,40 @@ function NavBar(args) {
   const handleLogout = () => {
     console.log("User logged out");
     
+    // Here you can also clear user data from localStorage if needed
+    localStorage.removeItem('users'); // Optional: Remove user data on logout
+    
     setModal(false); 
-     navigate("/login"); 
-
+    navigate("/login"); 
   };
 
   return (
     <>
       <Navbar {...args} expand="md" className="shadow-sm">
-        <NavbarBrand href="/">Reactstrap</NavbarBrand>
+      <Navbar>
+      <NavbarBrand href="/">
+        <img src={logo1} alt="Logo" style={{ height: '40px', marginRight: '10px' }} />
+        Nepal Donate.com
+      </NavbarBrand>
+    </Navbar>
+
         <NavbarToggler onClick={toggleNavbar} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="mx-auto" navbar>
-
-          <NavItem>
-              <Link className="nav-link" to="/toggledemo">Home</Link>
+            <NavItem>
+              <Link className="nav-link" to="/Home">Home</Link>
+            </NavItem>
+            <NavItem>
+              <Link className="nav-link" to="/user-data">User Data</Link>
             </NavItem>
 
-          <NavItem>
-              <Link className="nav-link" to="/userData">User Data</Link>
+            <NavItem>
+              <Link className="nav-link" to="/ndatePicker">Nepali date</Link>
             </NavItem>
 
             <NavItem>
               <Link className="nav-link" to="/toggledemo">Toggle</Link>
             </NavItem>
-
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav caret>More</DropdownToggle>
               <DropdownMenu end>

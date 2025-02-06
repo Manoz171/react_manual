@@ -1,36 +1,71 @@
-import React from 'react';
-import { Table } from 'reactstrap';
+import React, { useState } from 'react';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { useNavigate } from 'react-router-dom';
 
+function UserData({ users, onDeleteUser }) {
+  const [modal, setModal] = useState(false);
+  const [userIndex, setUserIndex] = useState(null);
+  const navigate = useNavigate();
 
-function UserData() {
-    const userData = [];
+  const toggleModal = () => setModal(!modal);
+
+  const handleDeleteClick = (index) => {
+    setUserIndex(index);
+    toggleModal();
+  };
+
+  const confirmDelete = () => {
+    if (userIndex !== null) {
+      onDeleteUser(userIndex);
+      setUserIndex(null); // Reset userIndex after deletion
+      toggleModal(); // Close the modal
+      navigate("/user-data"); // Redirect to the same page to refresh
+    }
+  };
+
   return (
     <div className="container mt-5">
-      <h2>Registered Users</h2>
-      <Table bordered hover responsive size="sm">
-        <thead>
-          <tr>
-            <th>S.N</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-          </tr>
-        </thead>
-        <tbody>
-          {userData.length === 0 ? (
-            <tr><td colSpan="4" className="text-center">No users registered</td></tr>
-          ) : (
-            userData.map((user, index) => (
+      <h2>User Data</h2>
+      {users.length === 0 ? (
+        <p>No users registered yet.</p>
+      ) : (
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Date of Birth</th>
+              <th>Password</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user, index) => (
               <tr key={index}>
-                <th scope="row">{index + 1}</th>
-                <td>{user.firstName}</td>
-                <td>{user.lastName}</td>
+                <td>{user.username}</td>
                 <td>{user.email}</td>
+                <td>{user.dob}</td>
+                <td>{user.password}</td>
+                <td>
+                  <Button color="danger" onClick={() => handleDeleteClick(index)}>Delete</Button>
+                </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </Table>
+            ))}
+          </tbody>
+        </table>
+      )}
+
+      {/* Confirmation Modal */}
+      <Modal isOpen={modal} toggle={toggleModal}>
+        <ModalHeader toggle={toggleModal}>Confirm Deletion</ModalHeader>
+        <ModalBody>
+          Are you sure you want to delete this user?
+        </ModalBody>
+        <ModalFooter>
+          <Button color="danger" onClick={confirmDelete}>Delete</Button>
+          <Button color="secondary" onClick={toggleModal}>Cancel</Button>
+        </ModalFooter>
+      </Modal>
     </div>
   );
 }
